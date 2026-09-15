@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>我们的时光簿</title>
+<style>
+:root{--bg:#eee3d5;--paper:#fffaf1;--ink:#51463d;--muted:#998879}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"KaiTi","STKaiti","Microsoft YaHei",sans-serif}
+main{max-width:960px;margin:auto;padding:18px 12px 50px}header,.panel{background:var(--paper);border:2px solid #e5d6c4;border-radius:24px;padding:22px;margin-bottom:16px;box-shadow:0 4px 0 #d8c8b8}
+header{position:relative}header:after{content:"";position:absolute;right:24px;top:-12px;width:90px;height:27px;background:#e8c6b2;opacity:.7;transform:rotate(5deg)}
+.kicker,.muted{color:var(--muted)}h1{font-size:clamp(30px,7vw,52px);margin:10px 0}h2{margin-top:0}
+nav,.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:15px;padding:12px 17px;background:#eadaca;color:var(--ink);font:inherit;cursor:pointer}
+button.primary{background:#8b7564;color:white}.small{padding:8px 12px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}
+.book{text-align:left;min-height:185px}.book:nth-child(1){background:#fff5c9}.book:nth-child(2){background:#eee5fa}.book:nth-child(3){background:#f9dfc7}.book:nth-child(4){background:#dfeee5}
+.book .emoji{font-size:36px}.book h2{font-size:23px}.book p{color:#806f61}
+label{display:block;font-weight:bold;margin:13px 0 6px}input,textarea,select{width:100%;padding:12px;border:2px solid #e5d6c4;border-radius:13px;background:#fffdf8;color:var(--ink);font:inherit}textarea{min-height:110px}
+.note{background:#fff1b9;border-left:5px solid #d8b85d;border-radius:12px;padding:12px;margin:14px 0}.record{background:#fffdf8;border:1px dashed #cdbba8;border-radius:16px;padding:14px;margin-top:12px}.record h3{margin:0 0 5px}.chip{display:inline-block;background:#eadaca;border-radius:20px;padding:4px 9px;font-size:13px}
+.hidden{display:none!important}footer{text-align:center;color:var(--muted)}
+</style>
+</head>
+<body><main>
+<header><div class="kicker">两个人的共同记录 · 手账试作版</div><h1>我们的时光簿 🌷</h1><div class="muted">把平凡日子，收藏成以后会反复翻看的故事。</div><nav><button class="primary" onclick="home()">首页</button><button onclick="recent()">最近记录</button><button onclick="about()">关于</button></nav></header>
+
+<section id="home" class="panel"><h2>今天想记下什么？</h2><p class="muted">可以认真填写，也可以只留下一句话。</p><button class="primary" onclick="quick()">✍️ 速记一条</button><div class="grid" style="margin-top:18px">
+<button class="book" onclick="book('咪咪的衡水生活')"><div class="emoji">🌻</div><h2>咪咪的衡水生活</h2><p>衡水本地生活与美食</p></button>
+<button class="book" onclick="book('柑柑的沈阳生活')"><div class="emoji">🌃</div><h2>柑柑的沈阳生活</h2><p>沈阳本地生活与美食</p></button>
+<button class="book" onclick="book('迁安烟火')"><div class="emoji">🏡</div><h2>迁安烟火</h2><p>家附近的日常与烟火气</p></button>
+<button class="book" onclick="book('旅行日记')"><div class="emoji">✈️</div><h2>旅行日记</h2><p>先记录城市，再记录店铺与菜品</p></button>
+</div></section>
+
+<section id="quick" class="panel hidden"><h2>✍️ 速记一条</h2><p class="muted">例：昨晚和柑柑去吃了老边饺子，点了猪肉白菜饺子和锅包肉，饺子好吃，锅包肉偏甜，花了86元。</p>
+<label>归档板块</label><select id="qb"><option>咪咪的衡水生活</option><option>柑柑的沈阳生活</option><option>迁安烟火</option><option>旅行日记</option></select>
+<label>写下一句话</label><textarea id="qt" placeholder="把今天发生的事写下来……"></textarea><div class="actions"><button class="primary" onclick="parse()">自动整理</button><button onclick="document.getElementById('qt').value=''">清空</button></div><div id="result"></div><button onclick="home()">返回首页</button></section>
+
+<section id="book" class="panel hidden"><h2 id="bt"></h2><div class="note">平时可以只写一点点；以后想补充时，再编辑成完整的“菜品详情”。</div>
+<label>店铺名称</label><input id="shop" placeholder="例如：老边饺子"><label>就餐时间</label><input id="time" placeholder="例如：2026年9月15日晚"><label>菜品详情</label><textarea id="dish" placeholder="可以写多道菜"></textarea><label>口味与感受</label><textarea id="feel" placeholder="好吃、偏甜、分量足、下次还想来……"></textarea><label>金额（可不填）</label><input id="cost" placeholder="例如：86元"><div class="actions"><button class="primary" onclick="saveRecord()">保存这次记录</button><button onclick="clearForm()">清空</button></div><div id="records"></div><button onclick="home()">返回首页</button></section>
+
+<section id="recent" class="panel hidden"><h2>📚 最近记录</h2><div id="all"></div><button onclick="home()">返回首页</button></section>
+<section id="about" class="panel hidden"><h2>关于我们的时光簿</h2><p>这是一个属于两个人的生活手账。平时可以速记，重要的回忆可以慢慢补充完整。</p><p class="muted">当前版本把记录保存在此浏览器中。跨设备共享、照片上传和真正的 AI 整理可以后续接入。</p><button onclick="home()">返回首页</button></section>
+<footer>愿我们把普通的日子，也过成值得收藏的故事。</footer>
+</main>
+<script>
+let current="",data=JSON.parse(localStorage.getItem("tb")||"[]"),$=id=>document.getElementById(id);
+function hide(){["home","quick","book","recent","about"].forEach(x=>$(x).classList.add("hidden"))}
+function home(){hide();$("home").classList.remove("hidden")}function quick(){hide();$("quick").classList.remove("hidden");$("result").innerHTML=""}
+function recent(){hide();$("recent").classList.remove("hidden");$("all").innerHTML=data.length?data.map(card).join(""):"<p class='muted'>还没有记录。</p>"}
+function about(){hide();$("about").classList.remove("hidden")}
+function book(n){current=n;hide();$("book").classList.remove("hidden");$("bt").textContent=n;clearForm();render()}
+function clearForm(){["shop","time","dish","feel","cost"].forEach(x=>$(x).value="")}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function card(r){return "<article class='record'><h3>"+esc(r.shop)+" <span class='chip'>"+esc(r.book)+"</span></h3><div class='muted'>"+esc(r.time)+(r.cost?" · "+esc(r.cost):"")+"</div>"+(r.dish?"<p><b>菜品详情：</b>"+esc(r.dish).replace(/\n/g,"<br>")+"</p>":"")+(r.feel?"<p><b>感受：</b>"+esc(r.feel).replace(/\n/g,"<br>")+"</p>":"")+"</article>"}
+function render(){let a=data.filter(r=>r.book===current);$("records").innerHTML=a.length?a.map(card).join(""):"<p class='muted'>这里还没有记录，写下第一段回忆吧。</p>"}
+function saveRecord(){if(!$("shop").value.trim()&&!$("dish").value.trim()&&!$("feel").value.trim()){alert("至少写一点内容吧～");return}data.unshift({book:current,shop:$("shop").value||"未命名记录",time:$("time").value||"未填写时间",dish:$("dish").value,feel:$("feel").value,cost:$("cost").value});localStorage.setItem("tb",JSON.stringify(data));clearForm();render();alert("已经收藏进时光簿啦 🌷")}
+function parse(){let t=$("qt").value.trim();if(!t){alert("先写下一句话吧～");return}let shop=(t.match(/(?:去吃了|去了|在|到|吃了)([^，。,.！!]+)/)||[])[1]||"待确认店铺",cost=(t.match(/(?:花了|消费|共计|一共)([0-9]+(?:\.[0-9]+)?元?)/)||[])[1]||"",dish=(t.match(/(?:点了|吃了)([^，。,.！!]+)/)||[])[1]||"",feel=t.split(/[，。,.！!]/).filter(x=>/好吃|难吃|偏甜|偏咸|分量|推荐|一般|喜欢|失望/.test(x)).join("；");
+$("result").innerHTML="<div class='note'><b>我先帮你整理成这样：</b><p>店铺："+esc(shop)+"</p><p>菜品详情："+esc(dish||"待补充")+"</p><p>口味与感受："+esc(feel||"待补充")+"</p><p>金额："+esc(cost||"待补充")+"</p><p class='muted'>这是初步识别结果，可以继续修改。</p></div><button class='primary' onclick='fill("+JSON.stringify(shop)+","+JSON.stringify(dish)+","+JSON.stringify(feel)+","+JSON.stringify(cost)+")'>继续编辑并保存</button>"}
+function fill(s,d,f,c){book($("qb").value);$("shop").value=s;$("dish").value=d;$("feel").value=f;$("cost").value=c;$("time").value="今天"}
+home();
+</script></body></html>
